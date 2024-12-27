@@ -3,10 +3,13 @@ import CityItem from "./CityItem";
 import styles from "./CityList.module.css";
 import Spinner from "./Spinner";
 import Message from "./Message";
+import { useCities } from "../context/CitiesContext";
 
-function CityList({ isLoading, cities }) {
+function CityList() {
+  const { cities, isLoading } = useCities();
   if (isLoading) return <Spinner />;
 
+  // If there are no cities, show a message to add a city
   if (!cities.length)
     return (
       <Message message="Add your first city by clicking on a city on the map" />

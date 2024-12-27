@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import styles from "./CityItem.module.css";
+import { useCities } from "../context/CitiesContext";
 
 const flagemojiToPNG = (flag) => {
   var countryCode = Array.from(flag, (codeUnit) => codeUnit.codePointAt())
@@ -10,6 +11,7 @@ const flagemojiToPNG = (flag) => {
   );
 };
 
+// Format the date to a human-readable format
 const formatDate = (date) =>
   new Intl.DateTimeFormat("en", {
     day: "numeric",
@@ -18,18 +20,30 @@ const formatDate = (date) =>
   }).format(new Date(date));
 
 function CityItem({ city }) {
+  const { currentCity, deleteCity } = useCities();
+
+  // Extract the city properties
   const { cityName, emoji, date, id, position } = city;
-  console.log(city);
+
+  function handleClick(e) {
+    e.preventDefault();
+    // Delete the city
+    deleteCity(id);
+  }
 
   return (
     <Link
-      className={styles.cityItem}
+      className={`${styles.cityItem} ${
+        id === currentCity.id ? styles["cityItem--active"] : ""
+      }`}
       to={`${id}?lat=${position.lat}&lng=${position.lng}`}
     >
       <span className={styles.emoji}>{flagemojiToPNG(emoji)}</span>
       <h3 className={styles.name}>{cityName}</h3>
       <time className={styles.date}>{formatDate(date)}</time>
-      <button className={styles.deleteBtn}>&times;</button>
+      <button className={styles.deleteBtn} onClick={handleClick}>
+        &times;
+      </button>
     </Link>
   );
 }
